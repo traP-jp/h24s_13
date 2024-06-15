@@ -95,15 +95,22 @@ func (h *Handlers) GetUserConnections(c echo.Context) error {
 	}
 
 	// Get user connections
-	connections := make([]*userConnection, 0)
-	// TODO: implement me
-	connections = append(connections, &userConnection{
-		ID:       id,
-		Strength: 100.0,
-	})
+	conn, err := h.repo.GetConnections(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	// Format
+	connectionsJson := make([]*userConnection, 0)
+	for k, v := range conn {
+		connectionsJson = append(connectionsJson, &userConnection{
+			ID:       k,
+			Strength: v,
+		})
+	}
 
 	// Respond
-	return c.JSON(http.StatusOK, connections)
+	return c.JSON(http.StatusOK, connectionsJson)
 }
 
 const quizChoiceCount = 5
