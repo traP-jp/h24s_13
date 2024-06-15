@@ -10,6 +10,12 @@ import (
 
 var TOKEN = os.Getenv("TOKEN")
 
+// map の key
+type mapKeys struct {
+	UserName    string
+	ChannelName string
+}
+
 func main() {
 	client := traq.NewAPIClient(traq.NewConfiguration())
 	auth := context.WithValue(context.Background(), traq.ContextAccessToken, TOKEN)
@@ -60,4 +66,27 @@ func main() {
 	}
 
 	fmt.Println(len(users), len(timeses))
+
+	userIdToUserName := make(map[string]string)
+	for _, v := range users {
+		userIdToUserName[v.GetId()] = v.GetName()
+	}
+
+	m := make(map[mapKeys]int)
+	for _, channel := range timeses {
+		stats, r, err := client.ChannelApi.GetChannelStats(auth, channel.GetId()).Execute()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error when calling `ChannelApi.GetChannelStats``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+		}
+
+		for _, userStat := range stats.Users {
+			if userName, ok := userIdToUserName[userStat.GetId()]; ok {
+				m[mapKeys{UserName: userName, ChannelName: channel.Name}] += int(userStat.GetMessageCount())
+				fmt.Printf("#gps/times/%s での %s の発言: %d\n", channel.Name, userName, userStat.GetMessageCount())
+			}
+		}
+	}
+
+	fmt.Println(m[mapKeys{UserName: "Series_205", ChannelName: "Series_205"}])
 }
