@@ -18,7 +18,7 @@
   <div class="grid grid-rows-1 grid-flow-col">
     <div>
       <div v-for="profile in profilesA" :key="profile.traPID" >
-        <div class="flex bg-blue-50">
+        <div class="flex bg-blue-50 justify-center">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>
@@ -26,7 +26,7 @@
     </div>
     <div>
       <div v-for="profile in profilesB" :key="profile.traPID">
-        <div class="flex bg-red-50">
+        <div class="flex bg-red-50 justify-center">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>
@@ -34,7 +34,7 @@
     </div>
     <div>
       <div v-for="profile in profilesC" :key="profile.traPID">
-        <div class="flex bg-green-50">
+        <div class="flex bg-green-50 justify-center">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>
@@ -42,7 +42,7 @@
     </div>
     <div>
       <div v-for="profile in profilesD" :key="profile.traPID">
-        <div class="flex bg-yellow-50">
+        <div class="flex bg-yellow-50 justify-center">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>
@@ -50,7 +50,7 @@
     </div>
     <div>
       <div v-for="profile in profilesE" :key="profile.traPID">
-        <div class="flex bg-purple-50">
+        <div class="flex bg-purple-50 justify-center">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>
