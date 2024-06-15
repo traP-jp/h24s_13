@@ -1,12 +1,20 @@
 <template>
-  <div class="text-8xl aboutw-100 flex justify-center mt-5">
-    <h1>タイトルの名前</h1>
+  <body>
+    <div class="app mt-40">
+    <div class="text-8xl flex justify-center">
+      <h1>タイトルの名前</h1>
+    </div>
+  
+   <div class="flex justify-center mt-10">
+      <button @click="home" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-12 rounded fucus:outline-none focus:shadow-outline mt-3">
+        ゲームをプレイ
+      </button>
+    </div>
+    
   </div>
-  <div class="flex justify-center items-center h-screen">
-    <button @click="home" class="text-7xl bg-green-400 px-8 py-4">
-      ゲームをプレイ
-    </button>
-  </div>
+  </body>
+  
+ 
 </template>
 
 <script setup>
@@ -20,5 +28,16 @@ function home() {
 </script>
 
 <style>
+  .app{
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+  }
+  body{
+    background-color: rgb(217, 244, 244);
+  }
 </style>
 
