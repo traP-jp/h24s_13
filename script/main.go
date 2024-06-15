@@ -20,13 +20,13 @@ func main() {
 	// 	Execute()
 	// fmt.Printf("%#v", v)
 
-	users, r, err := client.UserApi.GetUsers(auth).Execute()
+	usersIncludeBot, r, err := client.UserApi.GetUsers(auth).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `UserApi.GetUsers``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 	// responce from `GetUsers`
-	// fmt.Printf("%v\n", users)
+	// fmt.Printf("%v\n", usersIncludeBot)
 
 	// #gps/times の id
 	timesId := "8ed62c7d-3f4b-41c8-a446-29edeebc36c3"
@@ -49,6 +49,13 @@ func main() {
 		}
 		if !channel.GetArchived() {
 			timeses = append(timeses, *channel)
+		}
+	}
+
+	var users []traq.User
+	for _, v := range usersIncludeBot {
+		if !v.GetBot() {
+			users = append(users, v)
 		}
 	}
 
