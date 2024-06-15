@@ -57,17 +57,13 @@ const checkResult = () => {
   height: 0;
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
-  border-right: 20px solid #f87171;
-  position: absolute;
-  left: -20px;
-  top: 0;
+  border-right: 20px solid #ed2b2be6;
 }
 .triangle-right {
   width: 0;
   height: 0;
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
-  border-left: 20px solid #60a5fa;
-  
+  border-left: 20px solid #60a5faa3;
 }
 </style>
