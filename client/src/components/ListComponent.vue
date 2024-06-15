@@ -22,9 +22,9 @@
 
 <template>
   <div>友達の友達リスト</div>
-  <div class="grid grid-rows-5 grid-flow-col gap-4">
+  <div class="grid grid-rows-5 grid-flow-col">
     <div v-for="profile in profiles" :key="profile.traPID">
-        <div class="flex">
+        <div class="flex bg-blue-50">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>
