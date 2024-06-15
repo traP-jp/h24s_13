@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-1 place-items-center">
     <div><h1 class="text-6xl">Welcome to GameView!</h1></div>
-    <div class="text-4xl h-40">hogeさんとの繋がりが近い順に並べてください</div>
+    <div class="text-4xl h-40">hogeさんとの繋がりが強い順に並べてください</div>
     <draggable v-model="userInfo" item-key="id" class="grid grid-cols-5 gap-4" handle=".handle">
       <template #item="{ element }">
         <span class="handle">
@@ -15,15 +15,17 @@
     </draggable>
   </div>
 
-  
-  <br/>
   <div class="flex justify-center w-full mt-3 relative"></div>
   <div class="flex justify-center w-full mt-3">
       <div class="triangle-left"></div>
       <div class="w-96 bg-gray-300 h-10 bg-gradient-to-r from-red-500 to-blue-300 via-red-300"></div>
       <div class="triangle-right"></div>
     </div>
-  <br/>
+    <div class="flex justify-center items-center gap-4">
+      <div class="text-2xl h-10 mx-6">強い</div>
+      <div class="text-2xl h-10 mx-20">繋がり</div>
+      <div class="text-2xl h-10 mx-6">弱い </div>
+    </div>
 
 <div class="flex justify-center">
     <button
