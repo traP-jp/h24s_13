@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	traq "github.com/traPtitech/go-traq"
+	"github.com/samber/lo"
+	"github.com/schollz/progressbar/v3"
+	"github.com/traPtitech/go-traq"
 )
 
 var TOKEN = os.Getenv("TOKEN")
@@ -26,13 +28,22 @@ func main() {
 	// 	Execute()
 	// fmt.Printf("%#v", v)
 
-	usersIncludeBot, r, err := client.UserApi.GetUsers(auth).Execute()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `UserApi.GetUsers``: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	var users []*traq.UserDetail
+	{
+		usersIncludingBot, r, err := client.UserApi.GetUsers(auth).Execute()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error when calling `UserApi.GetUsers``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+		}
+		usersExcludingBot := lo.Filter(usersIncludingBot, func(u traq.User, _ int) bool { return !u.Bot })
+
+		bar := progressbar.Default(int64(len(usersExcludingBot)), "Getting user details")
+		users = lo.Map(usersExcludingBot, func(u traq.User, _ int) *traq.UserDetail {
+			ud, _ := lo.Must2(client.UserApi.GetUser(auth, u.Id).Execute())
+			lo.Must0(bar.Add(1))
+			return ud
+		})
 	}
-	// responce from `GetUsers`
-	// fmt.Printf("%v\n", usersIncludeBot)
 
 	// #gps/times の id
 	timesId := "8ed62c7d-3f4b-41c8-a446-29edeebc36c3"
@@ -47,6 +58,7 @@ func main() {
 
 	timesesId := times.GetChildren()
 	var timeses []traq.Channel
+	bar := progressbar.Default(int64(len(timesesId)), "Getting channel details")
 	for _, v := range timesesId {
 		channel, r, err := client.ChannelApi.GetChannel(auth, v).Execute()
 		if err != nil {
@@ -56,13 +68,7 @@ func main() {
 		if !channel.GetArchived() {
 			timeses = append(timeses, *channel)
 		}
-	}
-
-	var users []traq.User
-	for _, v := range usersIncludeBot {
-		if !v.GetBot() {
-			users = append(users, v)
-		}
+		lo.Must0(bar.Add(1))
 	}
 
 	// fmt.Println(len(users), len(timeses))
@@ -85,12 +91,7 @@ func main() {
 		if _, ok := timesNameToUserName[usr.GetName()]; ok {
 			timesNameToUserName[usr.GetName()] = usr.GetName()
 		} else {
-			userDetail, r, err := client.UserApi.GetUser(auth, usr.GetId()).Execute()
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error when calling `UserApi.GetUser``: %v\n", err)
-				fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-			}
-			if home := userDetail.GetHomeChannel(); home != "" {
+			if home := usr.GetHomeChannel(); home != "" {
 				timesNameToUserName[timesIdToTimesName[home]] = usr.GetName()
 				// fmt.Println(userDetail.GetName(), timesIdToTimesName[home])
 			} else {
@@ -100,6 +101,7 @@ func main() {
 	}
 
 	connection := make(map[mapKeys]int)
+	bar = progressbar.Default(int64(len(timeses)), "Getting channel stats")
 	for _, root := range timeses {
 		if timesUser := timesNameToUserName[root.GetName()]; timesUser != "" {
 			que := []traq.Channel{root}
@@ -132,6 +134,7 @@ func main() {
 			}
 			// fmt.Println()
 		}
+		lo.Must0(bar.Add(1))
 	}
 
 	fmt.Println("TRUNCATE TABLE `user_connections`;")
@@ -149,24 +152,21 @@ func main() {
 	}
 	fmt.Println()
 
+	groups, _ := lo.Must2(client.GroupApi.GetUserGroups(auth).Execute())
+	groupIDToInfo := make(map[string]*traq.UserGroup, len(groups))
+	for _, g := range groups {
+		groupIDToInfo[g.Id] = &g
+	}
+
 	fmt.Println("INSERT INTO `user_groups` VALUES")
 	for i, usr := range users {
-		userDetail, r, err := client.UserApi.GetUser(auth, usr.GetId()).Execute()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error when calling `UserApi.GetUser``: %v\n", err)
-			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-		}
-		for j, groupId := range userDetail.GetGroups() {
-			group, r, err := client.GroupApi.GetUserGroup(auth, groupId).Execute()
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error when calling `GroupApi.GetUserGroup``: %v\n", err)
-				fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-			}
+		for j, groupId := range usr.GetGroups() {
+			group := groupIDToInfo[groupId]
 			suffix := ","
-			if i+1 == len(users) && j+1 == len(userDetail.GetGroups()) {
+			if i+1 == len(users) && j+1 == len(usr.GetGroups()) {
 				suffix = ";"
 			}
-			fmt.Printf("('%s', '%s')%s\n", userDetail.GetName(), group.GetName(), suffix)
+			fmt.Printf("('%s', '%s')%s\n", usr.GetName(), group.GetName(), suffix)
 		}
 	}
 	fmt.Println()
