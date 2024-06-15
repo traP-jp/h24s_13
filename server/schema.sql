@@ -1,7 +1,7 @@
 CREATE TABLE `users`
 (
     `id`   VARCHAR(32) PRIMARY KEY COMMENT 'traQ ID',
-    `name` VARCHAR(32) PRIMARY KEY COMMENT '表示名'
+    `name` VARCHAR(32) COMMENT '表示名'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_bin
