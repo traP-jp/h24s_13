@@ -15,7 +15,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 function home() {
-  router.push('/router')
+  router.push('/prepare')
 }
 </script>
 
