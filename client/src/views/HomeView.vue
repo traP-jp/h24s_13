@@ -1,6 +1,6 @@
 <template>
   <body>
-    <div class="app">
+    <div class="app mt-40">
     <div class="text-8xl flex justify-center">
       <h1>タイトルの名前</h1>
     </div>
