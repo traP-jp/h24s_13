@@ -4,10 +4,13 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
+
+	"github.com/traP-jp/h24s_13/server/utils/ds"
 )
 
 type Handlers struct {
@@ -146,11 +149,16 @@ func (h *Handlers) GetQuizAnswer(c echo.Context) error {
 	}
 
 	// Get correct answers
+	conn, err := h.repo.GetConnections(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	// Sort
 	answers := make([]string, 0, quizChoiceCount)
-	// TODO: implement me
 	for range quizChoiceCount {
 		answers = append(answers, id)
 	}
+	slices.SortFunc(answers, ds.SortDesc(func(id string) float64 { return conn[id] }))
 
 	// Respond
 	return c.JSON(http.StatusOK, answers)
