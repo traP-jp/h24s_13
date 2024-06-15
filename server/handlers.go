@@ -154,10 +154,8 @@ func (h *Handlers) GetQuizAnswer(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	// Sort
-	answers := make([]string, 0, quizChoiceCount)
-	for range quizChoiceCount {
-		answers = append(answers, id)
-	}
+	answers := make([]string, quizChoiceCount)
+	copy(answers, userAnswers)
 	slices.SortFunc(answers, ds.SortDesc(func(id string) float64 { return conn[id] }))
 
 	// Respond

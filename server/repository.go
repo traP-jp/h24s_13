@@ -16,12 +16,17 @@ func NewRepository() (*Repository, error) {
 		User:   getEnv("root", "MARIADB_USER", "NS_MARIADB_USER"),
 		Passwd: getEnv("", "MARIADB_PASSWORD", "NS_MARIADB_PASSWORD"),
 		Net:    "tcp",
-		Addr: getEnv("localhost", "MARIADB_HOST", "NS_MARIADB_HOST") +
+		Addr: getEnv("localhost", "MARIADB_HOSTNAME", "NS_MARIADB_HOSTNAME") +
 			":" + getEnv("3306", "MARIADB_PORT", "NS_MARIADB_PORT"),
-		DBName:    getEnv("", "MARIADB_NAME", "NS_MARIADB_NAME"),
-		ParseTime: true,
+		DBName:               getEnv("", "MARIADB_DATABASE", "NS_MARIADB_DATABASE"),
+		ParseTime:            true,
+		AllowNativePasswords: true,
 	}
 	db, err := sqlx.Open("mysql", conf.FormatDSN())
+	if err != nil {
+		return nil, err
+	}
+	err = db.Ping()
 	if err != nil {
 		return nil, err
 	}
