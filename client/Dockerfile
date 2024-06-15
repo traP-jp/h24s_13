@@ -22,6 +22,6 @@ WORKDIR /work
 COPY --from=base /work .
 RUN npm run build
 
-FROM joseluisq/static-web-server:2 AS prod
+FROM ghcr.io/static-web-server/static-web-server:2 AS prod
 
 COPY --from=builder /work/dist /public

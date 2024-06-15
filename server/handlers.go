@@ -16,6 +16,17 @@ func NewHandlers(repo *Repository) *Handlers {
 	return &Handlers{repo: repo}
 }
 
+type getMeResponse struct {
+	ID string `json:"id"`
+}
+
+func (h *Handlers) GetMe(c echo.Context) error {
+	id := c.Request().Header.Get("X-Forwarded-User")
+	return c.JSON(http.StatusOK, &getMeResponse{
+		ID: id,
+	})
+}
+
 type getUserResponse struct {
 	Groups []string `json:"groups"`
 }

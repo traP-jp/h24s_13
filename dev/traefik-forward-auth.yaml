@@ -1,0 +1,28 @@
+secret: dev-secret
+log-level: info
+
+provider: oidc
+insecure-cookie: true
+
+auth-host: auth.local.trapti.tech
+cookie-domains: local.trapti.tech
+cookie-name: _forward_auth
+# 2 weeks
+lifetime: 1209600
+info-fields:
+  - name
+
+providers:
+  oidc:
+    # Only need the "openid" scope for now
+    scopes: ""
+    issuer-url: https://q.trap.jp
+    client-id: "fwa5rtIuIgviI0RvnumqSUChKcGFZwcxwzih"
+    # NOTE: public client does not necessarily need the secret
+    client-secret: "KwjZxBS2PZJtCIK5oAKe9PpOEvMJ6uVk77iy"
+    prompt: none
+
+headers:
+  h-1:
+    name: X-Forwarded-User
+    source: name
