@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql"
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -39,8 +41,14 @@ func (h *Handlers) GetUser(c echo.Context) error {
 	}
 
 	// Get groups
-	// TODO: implement me
-	groups := []string{id}
+	user, err := h.repo.GetUser(id)
+	if errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusNotFound, "user not found")
+	}
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	groups := user.Groups
 
 	// Respond
 	return c.JSON(http.StatusOK, &getUserResponse{
