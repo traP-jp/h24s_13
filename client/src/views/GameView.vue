@@ -43,7 +43,6 @@ const checkResult = () => {
   console.log(userInfo.value)
   router.push('/result')
 }
-
 </script>
 
 <style scoped></style>
