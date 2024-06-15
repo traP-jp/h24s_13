@@ -36,6 +36,7 @@ func main() {
 	e := echo.New()
 	api := e.Group("/api")
 	{
+		api.GET("/users/me", h.GetMe)
 		api.GET("/users/:id", h.GetUser)
 		api.GET("/users/:id/random", h.GetUserRandomConnection)
 		api.GET("/users/:id/connections", h.GetUserConnections)
