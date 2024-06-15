@@ -65,7 +65,7 @@ func main() {
 		}
 	}
 
-	fmt.Println(len(users), len(timeses))
+	// fmt.Println(len(users), len(timeses))
 
 	userIdToUserName := make(map[string]string)
 	for _, v := range users {
@@ -101,11 +101,11 @@ func main() {
 	cnt := 0
 	for _, channel := range timeses {
 		if timesNameToUserName[channel.GetName()] == "" && !channel.GetArchived() {
-			fmt.Println(channel.GetName())
+			// fmt.Println(channel.GetName())
 			cnt++
 		}
 	}
-	fmt.Println(cnt)
+	// fmt.Println(cnt)
 
 	m := make(map[mapKeys]int)
 	for _, channel := range timeses {
@@ -120,7 +120,7 @@ func main() {
 				if userName, ok := userIdToUserName[userStat.GetId()]; ok {
 					m[mapKeys{timesNameToUserName[channel.GetName()], userName}] += int(userStat.GetMessageCount())
 					m[mapKeys{userName, timesNameToUserName[channel.GetName()]}] += int(userStat.GetMessageCount())
-					fmt.Printf("%s のtimesでの %s の発言: %d\n", timesNameToUserName[channel.GetName()], userName, userStat.GetMessageCount())
+					// fmt.Printf("%s のtimesでの %s の発言: %d\n", timesNameToUserName[channel.GetName()], userName, userStat.GetMessageCount())
 				}
 			}
 		}
