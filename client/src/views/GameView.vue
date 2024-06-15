@@ -14,14 +14,18 @@
       </template>
     </draggable>
   </div>
-  <br />
+
+  
+  <br/>
+  <div class="flex justify-center w-full mt-3 relative"></div>
   <div class="flex justify-center w-full mt-3">
-    <div
-      class="w-96 bg-gray-300 h-10 bg-gradient-to-r from-red-500 to-blue-500 via-green-400"
-    ></div>
-  </div>
-  <br />
-  <div class="flex justify-center">
+      <div class="triangle-left"></div>
+      <div class="w-96 bg-gray-300 h-10 bg-gradient-to-r from-red-500 to-blue-300 via-red-300"></div>
+      <div class="triangle-right"></div>
+    </div>
+  <br/>
+
+<div class="flex justify-center">
     <button
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded fucus:outline-none focus:shadow-outline mt-3"
       @click="checkResult"
@@ -47,4 +51,19 @@ const checkResult = () => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.triangle-left {
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid #ed2b2be6;
+}
+.triangle-right {
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 20px solid #60a5faa3;
+}
+</style>
