@@ -5,7 +5,7 @@
       <div class="center-item">
         <img
           @click="showCenterPersonInfo"
-          src="https://q.trap.jp/api/v3/public/icon/toki"
+          :src="`https://q.trap.jp/api/v3/public/icon/${centerPersonId}`"
           alt="center icon"
           class="rounded-full w-16 h-16"
         />
@@ -19,6 +19,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+const props = defineProps({
+  centerPersonId: String
+})
 
 const images = ref<string[]>([
   `https://q.trap.jp/api/v3/public/icon/masky5859`,
