@@ -9,8 +9,9 @@ CREATE TABLE `users`
 
 CREATE TABLE `user_groups`
 (
-    `id`   VARCHAR(32) PRIMARY KEY COMMENT 'traQ ID',
-    `name` VARCHAR(32) COMMENT 'traQ Group Name'
+    `id`   VARCHAR(32) COMMENT 'traQ ID',
+    `name` VARCHAR(32) COMMENT 'traQ Group Name',
+    INDEX `idx_user_groups_id` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_bin
