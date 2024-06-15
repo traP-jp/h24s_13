@@ -1,5 +1,8 @@
 <script setup lang="ts">
-
+  import {ref} from 'vue'
+  const traQID = ref<string>("");
+  const click = (msg:string)=>{alert(msg)}
+  
 </script>
 
 <template>
@@ -15,13 +18,14 @@
   <br><br>
   <div class="flex justify-center">
     <label for="traQid" class="">traQIDを入力してください:</label>
-    <input id="traQid" type="text" class="bg-white px-3 text-gray-700 border border-gray-700 rounded">
+    <input id="traQid" type="text" v-model="traQID" class="bg-white px-3 text-gray-700 border border-gray-700 rounded">
   </div>
   
   <br>
   <div class="flex justify-center">
     <button
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded fucus:outline-none focus:shadow-outline mt-3"
+      @click="click(traQID)"
     >
       ゲームスタート
     </button>
