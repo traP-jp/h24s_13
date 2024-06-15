@@ -1,7 +1,7 @@
 <template>
   <div>This is an About page.</div>
   <ListComponent />
-  <WebComponent />
+  <WebComponent centerPersonId="toki" />
 </template>
 
 <script setup lang="ts">

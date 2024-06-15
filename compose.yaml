@@ -18,7 +18,7 @@ services:
     build: ./server
     environment:
       PORT: "8080"
-      MARIADB_HOST: localhost
+      MARIADB_HOSTNAME: mysql
       MARIADB_PORT: "3306"
       MARIADB_USER: root
       MARIADB_PASSWORD: password

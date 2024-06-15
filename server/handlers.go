@@ -1,11 +1,16 @@
 package main
 
 import (
+	"database/sql"
+	"errors"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
+
+	"github.com/traP-jp/h24s_13/server/utils/ds"
 )
 
 type Handlers struct {
@@ -39,8 +44,14 @@ func (h *Handlers) GetUser(c echo.Context) error {
 	}
 
 	// Get groups
-	// TODO: implement me
-	groups := []string{id}
+	user, err := h.repo.GetUser(id)
+	if errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusNotFound, "user not found")
+	}
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	groups := user.Groups
 
 	// Respond
 	return c.JSON(http.StatusOK, &getUserResponse{
@@ -87,15 +98,22 @@ func (h *Handlers) GetUserConnections(c echo.Context) error {
 	}
 
 	// Get user connections
-	connections := make([]*userConnection, 0)
-	// TODO: implement me
-	connections = append(connections, &userConnection{
-		ID:       id,
-		Strength: 100.0,
-	})
+	conn, err := h.repo.GetConnections(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	// Format
+	connectionsJson := make([]*userConnection, 0)
+	for k, v := range conn {
+		connectionsJson = append(connectionsJson, &userConnection{
+			ID:       k,
+			Strength: v,
+		})
+	}
 
 	// Respond
-	return c.JSON(http.StatusOK, connections)
+	return c.JSON(http.StatusOK, connectionsJson)
 }
 
 const quizChoiceCount = 5
@@ -131,11 +149,14 @@ func (h *Handlers) GetQuizAnswer(c echo.Context) error {
 	}
 
 	// Get correct answers
-	answers := make([]string, 0, quizChoiceCount)
-	// TODO: implement me
-	for range quizChoiceCount {
-		answers = append(answers, id)
+	conn, err := h.repo.GetConnections(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+	// Sort
+	answers := make([]string, quizChoiceCount)
+	copy(answers, userAnswers)
+	slices.SortFunc(answers, ds.SortDesc(func(id string) float64 { return conn[id] }))
 
 	// Respond
 	return c.JSON(http.StatusOK, answers)

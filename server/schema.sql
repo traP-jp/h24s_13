@@ -9,8 +9,9 @@ CREATE TABLE `users`
 
 CREATE TABLE `user_groups`
 (
-    `id`   VARCHAR(32) PRIMARY KEY COMMENT 'traQ ID',
-    `name` VARCHAR(32) COMMENT 'traQ Group Name'
+    `id`   VARCHAR(32) COMMENT 'traQ ID',
+    `name` VARCHAR(32) COMMENT 'traQ Group Name',
+    INDEX `idx_user_groups_id` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_bin
@@ -21,8 +22,7 @@ CREATE TABLE `user_connections`
     `id_1`     VARCHAR(32) COMMENT 'traQ ID',
     `id_2`     VARCHAR(32) COMMENT 'traQ ID',
     `strength` DOUBLE COMMENT 'つながりの強さ',
-    PRIMARY KEY (`id_1`, `id_2`),
-    INDEX `idx_user_connections_id_2_id_1` (`id_2`, `id_1`)
+    PRIMARY KEY (`id_1`, `id_2`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_bin
