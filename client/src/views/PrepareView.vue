@@ -1,8 +1,13 @@
 <script setup lang="ts">
   import {ref} from 'vue'
+  import { useRouter } from 'vue-router'
+  const router = useRouter()
   const traQID = ref<string>("");
-  const click = (msg:string)=>{alert(msg)}
-  
+  const click = (msg:string)=>
+  {
+    alert(msg)
+    router.push('/')
+  }
 </script>
 
 <template>
