@@ -12,8 +12,8 @@ var TOKEN = os.Getenv("TOKEN")
 
 // map の key
 type mapKeys struct {
-	UserName    string
-	ChannelName string
+	UserA string
+	UserB string
 }
 
 func main() {
@@ -72,21 +72,58 @@ func main() {
 		userIdToUserName[v.GetId()] = v.GetName()
 	}
 
+	timesIdToTimesName := make(map[string]string)
+	for _, v := range timeses {
+		timesIdToTimesName[v.GetId()] = v.GetName()
+	}
+
+	timesNameToUserName := make(map[string]string)
+	for _, channel := range timeses {
+		timesNameToUserName[channel.GetName()] = ""
+	}
+	for _, usr := range users {
+		if _, ok := timesNameToUserName[usr.GetName()]; ok {
+			timesNameToUserName[usr.GetName()] = usr.GetName()
+		} else {
+			userDetail, r, err := client.UserApi.GetUser(auth, usr.GetId()).Execute()
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error when calling `UserApi.GetUser``: %v\n", err)
+				fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+			}
+			if home := userDetail.GetHomeChannel(); home != "" {
+				timesNameToUserName[timesIdToTimesName[home]] = usr.GetName()
+				// fmt.Println(userDetail.GetName(), timesIdToTimesName[home])
+			} else {
+				// fmt.Println(usr.GetName())
+			}
+		}
+	}
+	cnt := 0
+	for _, channel := range timeses {
+		if timesNameToUserName[channel.GetName()] == "" && !channel.GetArchived() {
+			fmt.Println(channel.GetName())
+			cnt++
+		}
+	}
+	fmt.Println(cnt)
+
 	m := make(map[mapKeys]int)
 	for _, channel := range timeses {
-		stats, r, err := client.ChannelApi.GetChannelStats(auth, channel.GetId()).Execute()
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error when calling `ChannelApi.GetChannelStats``: %v\n", err)
-			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-		}
+		if timesNameToUserName[channel.GetName()] != "" {
+			stats, r, err := client.ChannelApi.GetChannelStats(auth, channel.GetId()).Execute()
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error when calling `ChannelApi.GetChannelStats``: %v\n", err)
+				fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+			}
 
-		for _, userStat := range stats.Users {
-			if userName, ok := userIdToUserName[userStat.GetId()]; ok {
-				m[mapKeys{UserName: userName, ChannelName: channel.Name}] += int(userStat.GetMessageCount())
-				fmt.Printf("#gps/times/%s での %s の発言: %d\n", channel.Name, userName, userStat.GetMessageCount())
+			for _, userStat := range stats.Users {
+				if userName, ok := userIdToUserName[userStat.GetId()]; ok {
+					m[mapKeys{timesNameToUserName[channel.GetName()], userName}] += int(userStat.GetMessageCount())
+					m[mapKeys{userName, timesNameToUserName[channel.GetName()]}] += int(userStat.GetMessageCount())
+					fmt.Printf("%s のtimesでの %s の発言: %d\n", timesNameToUserName[channel.GetName()], userName, userStat.GetMessageCount())
+				}
 			}
 		}
 	}
 
-	fmt.Println(m[mapKeys{UserName: "Series_205", ChannelName: "Series_205"}])
 }
