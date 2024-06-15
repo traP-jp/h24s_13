@@ -13,6 +13,15 @@
         </span>
       </template>
     </draggable>
+  </div>
+  <br />
+  <div class="flex justify-center w-full mt-3">
+    <div
+      class="w-96 bg-gray-300 h-10 bg-gradient-to-r from-red-500 to-blue-500 via-green-400"
+    ></div>
+  </div>
+  <br />
+  <div class="flex justify-center">
     <button
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded fucus:outline-none focus:shadow-outline mt-3"
       @click="checkResult"
