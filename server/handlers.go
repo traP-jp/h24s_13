@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"math/rand"
 	"net/http"
 	"slices"
 	"strconv"
@@ -125,12 +126,28 @@ func (h *Handlers) GetQuiz(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "missing user id")
 	}
 
-	// Choose random 5 people
-	choices := make([]string, 0, quizChoiceCount)
-	// TODO: implement me
-	for range quizChoiceCount {
-		choices = append(choices, id)
+	conn, err := h.repo.GetConnections(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+
+	// Sort by strength
+	neighbors := make([]string, 0, len(conn))
+	for key := range conn {
+		neighbors = append(neighbors, key)
+	}
+	slices.SortFunc(neighbors, ds.SortDesc(func(id string) float64 { return conn[id] }))
+
+	// Choose random 5 people
+	// TODO: strength が同じ人が選ばれないようにする
+	choices := make([]string, 0, quizChoiceCount)
+	for i := range quizChoiceCount {
+		interval := neighbors[len(conn)*i/5 : len(conn)*(i+1)/5]
+		choices = append(choices, interval[rand.Intn(len(interval))])
+	}
+
+	// Shuffle
+	rand.Shuffle(len(choices), func(i, j int) { choices[i], choices[j] = choices[j], choices[i] })
 
 	// Respond
 	return c.JSON(http.StatusOK, choices)
