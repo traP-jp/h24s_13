@@ -13,7 +13,19 @@
         </span>
       </template>
     </draggable>
-    <button @click="checkResult" class="bg-sky-400 rounded-lg text-white font-bold">
+  </div>
+  <br />
+  <div class="flex justify-center w-full mt-3">
+    <div
+      class="w-96 bg-gray-300 h-10 bg-gradient-to-r from-red-500 to-blue-500 via-green-400"
+    ></div>
+  </div>
+  <br />
+  <div class="flex justify-center">
+    <button
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded fucus:outline-none focus:shadow-outline mt-3"
+      @click="checkResult"
+    >
       結果を見る
     </button>
   </div>
@@ -21,23 +33,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import draggable from 'vuedraggable'
+// import { globalState} from '../store/store.ts'
+import WebComponent from '../components/WebComponent.vue'
+import { userInfo } from '.././store.ts'
 
-interface User {
-  id: string
-}
-
-const userInfo = ref<User[]>([
-  { id: 'masky5859' },
-  { id: 'pirosiki' },
-  { id: 'cp20' },
-  { id: 'toki' },
-  { id: 'Series_205' }
-])
-
+const router = useRouter()
 const checkResult = () => {
   alert('結果を見るボタンが押されました')
   console.log(userInfo.value)
+  router.push('/result')
 }
 </script>
 
