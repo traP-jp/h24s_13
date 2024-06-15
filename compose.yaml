@@ -1,0 +1,45 @@
+services:
+  client:
+    build:
+      context: ./client
+      target: dev
+    volumes:
+      - ./client:/work
+      - /work/node_modules
+    labels:
+      "traefik.http.routers.client.rule": Host(`dev.local.trapti.tech`)
+      "traefik.http.routers.client.service": client
+      "traefik.http.services.client.loadbalancer.server.port": "5173"
+
+  server:
+    build: ./server
+    environment:
+      PORT: "8080"
+      MARIADB_HOST: localhost
+      MARIADB_PORT: "3306"
+      MARIADB_USER: root
+      MARIADB_PASSWORD: password
+      MARIADB_DATABASE: dev
+    labels:
+      "traefik.http.routers.server.rule": Host(`dev.local.trapti.tech`) && PathPrefix(`/api`)
+      "traefik.http.routers.server.service": server
+      "traefik.http.services.server.loadbalancer.server.port": "8080"
+
+  mysql:
+    image: mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+      MARIADB_DATABASE: dev
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+
+  traefik:
+    image: traefik:3.0
+    command:
+      - --providers.docker=true
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
