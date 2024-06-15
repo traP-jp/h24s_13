@@ -1,0 +1,30 @@
+<html lang="en">
+    <body>
+    <p>
+        <a href="https://q.trap.jp/api/v3/oauth2/authorize?client_id=RW2v3qsN1DgoJiyZAwOKuqtQVV5PmMVVcyDR&response_type=code">
+            Authorize
+        </a>
+    </p>
+    <p id="display">
+    </p>
+    <script>
+        const params = new URLSearchParams(document.location.search)
+        if (params.has('code')) {
+          const code = params.get('code')
+          const clientID = 'RW2v3qsN1DgoJiyZAwOKuqtQVV5PmMVVcyDR'
+          const url = 'https://q.trap.jp/api/v3/oauth2/token'
+          const header = 'Content-Type: application/x-www-form-urlencoded'
+          const codeParams = new URLSearchParams({
+            grant_type: 'authorization_code',
+            client_id: clientID,
+            code: code,
+          })
+          const curlCmd = `curl ${url} -H '${header}' --data-raw '${codeParams.toString()}'`
+
+          const display = document.querySelector('#display')
+          const textNode = document.createTextNode(curlCmd)
+          display.appendChild(textNode)
+        }
+    </script>
+    </body>
+</html>
