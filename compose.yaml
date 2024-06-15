@@ -3,13 +3,15 @@ services:
     build:
       context: ./client
       target: dev
+      # target: prod
     volumes:
       - ./client:/work
       - /work/node_modules
     labels:
       "traefik.http.routers.client.rule": Host(`dev.local.trapti.tech`)
       "traefik.http.routers.client.service": client
-      "traefik.http.services.client.loadbalancer.server.port": "5173"
+      "traefik.http.services.client.loadbalancer.server.port": "5173" # target: dev
+      # "traefik.http.services.client.loadbalancer.server.port": "80" # target: prod
 
   server:
     build: ./server

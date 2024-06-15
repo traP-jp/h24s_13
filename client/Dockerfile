@@ -17,9 +17,11 @@ ENTRYPOINT ["npm", "run", "dev", "--", "--host"]
 
 FROM node:22-alpine AS builder
 
+WORKDIR /work
+
 COPY --from=base /work .
 RUN npm run build
 
-FROM ghcr.io/static-web-server/static-web-server:2 AS server
+FROM joseluisq/static-web-server:2 AS prod
 
 COPY --from=builder /work/dist /public
