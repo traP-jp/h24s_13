@@ -12,8 +12,8 @@ var TOKEN = os.Getenv("TOKEN")
 
 // map の key
 type mapKeys struct {
-	UserA string
-	UserB string
+	id1 string
+	id2 string
 }
 
 func main() {
@@ -98,32 +98,92 @@ func main() {
 			}
 		}
 	}
-	cnt := 0
-	for _, channel := range timeses {
-		if timesNameToUserName[channel.GetName()] == "" && !channel.GetArchived() {
-			// fmt.Println(channel.GetName())
-			cnt++
-		}
-	}
-	// fmt.Println(cnt)
 
-	m := make(map[mapKeys]int)
-	for _, channel := range timeses {
-		if timesNameToUserName[channel.GetName()] != "" {
-			stats, r, err := client.ChannelApi.GetChannelStats(auth, channel.GetId()).Execute()
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error when calling `ChannelApi.GetChannelStats``: %v\n", err)
-				fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-			}
+	connection := make(map[mapKeys]int)
+	for _, root := range timeses {
+		if timesUser := timesNameToUserName[root.GetName()]; timesUser != "" {
+			que := []traq.Channel{root}
+			for len(que) > 0 {
+				channel := que[0]
+				que = que[1:]
 
-			for _, userStat := range stats.Users {
-				if userName, ok := userIdToUserName[userStat.GetId()]; ok {
-					m[mapKeys{timesNameToUserName[channel.GetName()], userName}] += int(userStat.GetMessageCount())
-					m[mapKeys{userName, timesNameToUserName[channel.GetName()]}] += int(userStat.GetMessageCount())
-					// fmt.Printf("%s のtimesでの %s の発言: %d\n", timesNameToUserName[channel.GetName()], userName, userStat.GetMessageCount())
+				stats, r, err := client.ChannelApi.GetChannelStats(auth, channel.GetId()).Execute()
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "Error when calling `ChannelApi.GetChannelStats``: %v\n", err)
+					fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+				}
+
+				for _, userStat := range stats.GetUsers() {
+					if userName, ok := userIdToUserName[userStat.GetId()]; ok && timesUser != userName {
+						connection[mapKeys{timesUser, userName}] += int(userStat.GetMessageCount())
+						connection[mapKeys{userName, timesUser}] += int(userStat.GetMessageCount())
+						// fmt.Printf("%s での %s の発言: %d\n", channel.GetName(), userName, userStat.GetMessageCount())
+					}
+				}
+
+				for _, childId := range channel.GetChildren() {
+					child, r, err := client.ChannelApi.GetChannel(auth, childId).Execute()
+					if err != nil {
+						fmt.Fprintf(os.Stderr, "Error when calling `ChannelApi.GetChannel``: %v\n", err)
+						fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+					}
+					que = append(que, *child)
 				}
 			}
+			// fmt.Println()
 		}
 	}
 
+	fmt.Println("TRUNCATE TABLE `user_connections`;")
+	fmt.Println("TRUNCATE TABLE `user_groups`;")
+	fmt.Println("TRUNCATE TABLE `users`;")
+	fmt.Println()
+
+	fmt.Println("INSERT INTO `users` VALUES")
+	for i, usr := range users {
+		suffix := ","
+		if i+1 == len(users) {
+			suffix = ";"
+		}
+		fmt.Printf("('%s', '%s')%s\n", usr.GetName(), usr.GetDisplayName(), suffix)
+	}
+	fmt.Println()
+
+	fmt.Println("INSERT INTO `user_groups` VALUES")
+	for i, usr := range users {
+		userDetail, r, err := client.UserApi.GetUser(auth, usr.GetId()).Execute()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error when calling `UserApi.GetUser``: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+		}
+		for j, groupId := range userDetail.GetGroups() {
+			group, r, err := client.GroupApi.GetUserGroup(auth, groupId).Execute()
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error when calling `GroupApi.GetUserGroup``: %v\n", err)
+				fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+			}
+			suffix := ","
+			if i+1 == len(users) && j+1 == len(userDetail.GetGroups()) {
+				suffix = ";"
+			}
+			fmt.Printf("('%s', '%s')%s\n", userDetail.GetName(), group.GetName(), suffix)
+		}
+	}
+	fmt.Println()
+
+	fmt.Println("INSERT INTO `user_connections` VALUES")
+	remain := len(connection)
+	// fmt.Println(connection)
+	for _, id1 := range users {
+		for _, id2 := range users {
+			if connect, ok := connection[mapKeys{id1.GetName(), id2.GetName()}]; ok {
+				remain--
+				suffix := ","
+				if remain == 0 {
+					suffix = ";"
+				}
+				fmt.Printf("('%s', '%s', '%d')%s\n", id1.GetName(), id2.GetName(), connect, suffix)
+			}
+		}
+	}
 }
