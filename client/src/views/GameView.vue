@@ -102,10 +102,12 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import draggable from 'vuedraggable'
-import WebComponent from '../components/WebComponent.vue'
-import { changeableUsers, targetId } from '.././store'
-import SvgIcon from '@jamescoyle/vue-icon'
+import { changeableUsers, targetId } from '@/store'
 import { mdiLightbulbOnOutline } from '@mdi/js'
+
+// 型定義が無い
+// @ts-ignore
+import SvgIcon from '@jamescoyle/vue-icon'
 
 const path = mdiLightbulbOnOutline
 
@@ -123,7 +125,7 @@ const closeHintModal = () => {
   isShowHint.value = false
 }
 
-const userGroups = ref<User[]>([])
+const userGroups = ref<string[]>([])
 const showHint = async (id: string) => {
   try {
     const response = await fetch(`/api/users/${id}`)
