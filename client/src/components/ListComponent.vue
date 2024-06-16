@@ -14,43 +14,43 @@
 </script>
 
 <template>
-  <div>友達の友達リスト</div>
+  <div class="font-bold text-2xl">友達の友達リスト</div>
   <div class="grid grid-rows-1 grid-flow-col">
-    <div class="grid gap-2 bg-blue-50">
+    <div class="grid bg-blue-50">
       <div v-for="profile in profilesA" :key="profile.traPID">
-        <div class="flex justify-center">
+        <div class="flex justify-center mt-1 mb-1">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>
       </div>
     </div>
-    <div class="grid gap-2 bg-red-50">
+    <div class="grid bg-red-50">
       <div v-for="profile in profilesB" :key="profile.traPID">
-        <div class="flex justify-center">
+        <div class="flex justify-center mt-1 mb-1">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>
       </div>
     </div>
-    <div class="grid gap-2 bg-green-50">
+    <div class="grid bg-green-50">
       <div v-for="profile in profilesC" :key="profile.traPID">
-        <div class="flex justify-center">
+        <div class="flex justify-center mt-1 mb-1">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>
       </div>
     </div>
-    <div class="grid gap-2 bg-yellow-50">
+    <div class="grid bg-yellow-50">
       <div v-for="profile in profilesD" :key="profile.traPID">
-        <div class="flex justify-center">
+        <div class="flex justify-center mt-1 mb-1">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>
       </div>
     </div>
-    <div class="grid gap-2 bg-purple-50">
+    <div class="grid bg-purple-50">
       <div v-for="profile in profilesE" :key="profile.traPID">
-        <div class="flex justify-center">
+        <div class="flex justify-center mt-1 mb-1">
           <img :src= "'https://q.trap.jp/api/v3/public/icon/'+profile.traPID" alt="アイコン" class="w-6 rounded-full">
           <span>{{ profile.name }}</span>
         </div>

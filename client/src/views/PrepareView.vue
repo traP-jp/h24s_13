@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { API_URL, changeableUsers, targetId } from '.././store'
+import { changeableUsers, targetId } from '.././store'
 const router = useRouter()
 const traQID = ref<string>('')
 const getFivePeople = async (id: string) => {
@@ -11,7 +11,7 @@ const getFivePeople = async (id: string) => {
   }
   targetId.value = id
   try {
-    const response = await fetch(`${API_URL}/quiz/new?id=${id}`)
+    const response = await fetch(`api/quiz/new?id=${id}`)
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }
