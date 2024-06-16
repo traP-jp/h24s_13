@@ -1,12 +1,13 @@
 <template>
-  <div class="app grid grid-cols-1 place-items-center">
-    <div class="text-4xl h-40">{{ targetId }}さんとの繋がりが近い順に並べてください</div>
-    <draggable
-      v-model="changeableUsers"
-      item-key="id"
-      class="grid grid-cols-5 gap-4"
-      handle=".handle"
-    >
+  <div class="container mx-auto app">
+    <div class="grid grid-cols-1 place-items-center mb-0">
+      <div class="app text-4xl h-32 font-bold my-0">{{ targetId }}さんとの繋がりが強い順に並べてください</div>
+      <draggable
+        v-model="changeableUsers"
+        item-key="id"
+        class="grid grid-cols-5 gap-4 h-16"
+        handle=".handle"
+      >
       <template #item="{ element }">
         <span class="handle">
           <img
@@ -26,9 +27,9 @@
       <div class="triangle-right"></div>
     </div>
     <div class="flex justify-center items-center gap-4">
-      <div class="text-2xl h-10 mx-6">強い</div>
-      <div class="text-2xl h-10 mx-20">繋がり</div>
-      <div class="text-2xl h-10 mx-6">弱い </div>
+      <div class="text-1xl h-10 font-bold mx-8">強い</div>
+      <div class="text-1xl h-10 font-bold mx-24">繋がり</div>
+      <div class="text-1xl h-10 font-bold mx-8">弱い </div>
     </div>
 
 <div class="flex justify-center">
@@ -39,6 +40,7 @@
       結果を見る
     </button>
   </div>
+ </div>
 </template>
 
 <script setup lang="ts">
