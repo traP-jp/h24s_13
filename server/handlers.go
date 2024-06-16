@@ -95,31 +95,14 @@ func (h *Handlers) GetUserRandomConnection(c echo.Context) error {
 		borderline = 0
 	}
 
-	choices := make([]string, 0)
-	used := make(map[string]bool)
-	for _, v := range friends {
-		// Get user connections
-		conn2, err := h.repo.GetConnections(v)
-		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-		}
-		// Sort by strength
-		friendsOfFriend := make([]string, 0, len(conn2))
-		for key := range conn2 {
-			friendsOfFriend = append(friendsOfFriend, key)
-		}
-		slices.SortFunc(friendsOfFriend, ds.SortDesc(func(id string) float64 { return conn2[id] }))
-		friendsOfFriend = friendsOfFriend[:len(friendsOfFriend)/2]
-
-		for _, v := range friendsOfFriend {
-			// Except friends of "id"
-			// Except "id"
-			if id != v && conn[v] < borderline && !used[v] {
-				choices = append(choices, v)
-				used[v] = true
-			}
-		}
+	choices, err := h.repo.GetFriends(friends)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+	choices = lo.Filter(choices, func(x string, index int) bool {
+		return x != id && conn[x] < borderline
+	})
+
 	ds.Shuffle(choices)
 
 	// Get "friend of friend" connections
