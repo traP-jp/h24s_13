@@ -62,13 +62,18 @@ import { targetId, imageURLs } from '../store'
 
 const isModalOpen = ref(false)
 
+interface Connection {
+  id: string
+  strength: number
+}
+
 const getConnections = async (id: string) => {
   try {
     const response = await fetch(`api/users/${id}/connections`)
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }
-    const connections = await response.json()
+    const connections = await response.json() as Connection[]
     let sortedConnections = connections
       .sort((a, b) => -a.strength + b.strength)
       .map((item) => ({
@@ -99,7 +104,8 @@ const showCenterPersonInfo = async () => {
 const showAroundPersonWeb = async (id: string) => {
   await getConnections(id)
 }
-const userGroups = ref<User[]>([])
+
+const userGroups = ref<string[]>([])
 const getUserGroups = async (id: string) => {
   try {
     const response = await fetch(`/api/users/${id}`)
