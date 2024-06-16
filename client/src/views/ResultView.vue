@@ -34,14 +34,14 @@
 </template>
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { changeableUsers, answerUsers, targetId, API_URL, imageURLs } from '.././store'
+import { changeableUsers, answerUsers, targetId, imageURLs } from '.././store'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
 const showConnection = async () => {
   try {
-    // const response = await fetch(`${API_URL}/users/${targetId.value}/connections`)
+    // const response = await fetch(`api/users/${targetId.value}/connections`)
     // if (!response.ok) {
     //   throw new Error('Network response was not ok')
     // }
@@ -61,8 +61,7 @@ const showConnection = async () => {
 const getAnswerUsers = async (id: string) => {
   try {
     const answersQuery = changeableUsers.value.map((user) => user.id).join(',')
-    const res = await fetch(`${API_URL}/quiz/answer?id=${id}&answers=${answersQuery}`)
-    console.log(`${API_URL}/quiz/new?id=${id}&answers=${answersQuery}`)
+    const res = await fetch(`api/quiz/new?id=${id}&answers=${answersQuery}`)
     const userIds = await res.json()
     answerUsers.value = userIds.map((userId: string) => ({ id: userId }))
   } catch (error) {
