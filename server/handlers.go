@@ -120,6 +120,21 @@ func (h *Handlers) GetUserRandomConnection(c echo.Context) error {
 	// Get "friend of friend" connections
 	choiceCount := min(count, len(choices))
 	connections := choices[:choiceCount]
+	// Edge case: count of friend of friend < count
+	// Select from all other users by random
+	if len(choices) < count {
+		users, err := h.repo.GetUserIDs()
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		// Users that are not choices
+		users = lo.Filter(users, func(id string, _ int) bool {
+			return !lo.Contains(choices, id)
+		})
+		ds.Shuffle(users)
+		additionCount := count - len(choices)
+		connections = append(connections, users[:min(additionCount, len(users))]...)
+	}
 
 	// Respond
 	return c.JSON(http.StatusOK, connections)
