@@ -5,13 +5,13 @@
       <div class="center-item">
         <img
           @click="showCenterPersonInfo"
-          :src="`https://q.trap.jp/api/v3/public/icon/${centerPersonId}`"
+          :src="`https://q.trap.jp/api/v3/public/icon/${targetId}`"
           alt="center icon"
           class="rounded-full w-16 h-16"
         />
       </div>
-      <div v-for="(image, index) in images" :key="index" class="circle-item">
-        <img @click="showAroundPersonWeb" :src="image" alt="around person" />
+      <div v-for="(image, index) in imageURLs" :key="index" class="circle-item">
+        <img @click="showAroundPersonWeb(image.id)" :src="image.url" alt="around person" />
       </div>
     </div>
   </div>
@@ -19,55 +19,36 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-const props = defineProps({
-  centerPersonId: String
-})
+import { targetId, API_URL, imageURLs } from '../store'
 
-const images = ref<string[]>([
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`,
-  `https://q.trap.jp/api/v3/public/icon/masky5859`
-])
-const showCenterPersonInfo = () => {
+const getConnections = async (id: string) => {
+  try {
+    const response = await fetch(`${API_URL}/users/${id}/connections`)
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+    const connections = await response.json()
+    const sortedConnections = connections
+      .sort((a, b) => -a.strength + b.strength)
+      .map((item) => ({
+        id: item.id,
+        url: `https://q.trap.jp/api/v3/public/icon/${item.id}`
+      }))
+    imageURLs.value = sortedConnections
+    targetId.value = id
+    console.log(imageURLs)
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+  }
+}
+const showCenterPersonInfo = async () => {
   console.log('center person info')
 }
-const showAroundPersonWeb = () => {
-  console.log('around person web')
+const showAroundPersonWeb = async (id: string) => {
+  await getConnections(id)
 }
-onMounted(() => {
+onMounted(async () => {
+  await getConnections(targetId.value)
   const items = document.querySelectorAll('.circle-item')
   const initialRadius = 100 // 最初の円の半径
   const container = document.querySelector('.big-circle') as HTMLElement
