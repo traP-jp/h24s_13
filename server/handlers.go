@@ -141,8 +141,9 @@ func (h *Handlers) GetQuiz(c echo.Context) error {
 
 	// Choose random 5 people
 	choices := make([]string, 0, quizChoiceCount)
-	for i := range min(quizChoiceCount, len(neighbors)) {
-		interval := neighbors[len(conn)*i/quizChoiceCount : len(conn)*(i+1)/quizChoiceCount]
+	intervalCount := min(quizChoiceCount, len(neighbors))
+	for i := range intervalCount {
+		interval := neighbors[len(conn)*i/intervalCount : len(conn)*(i+1)/intervalCount]
 		choices = append(choices, interval[rand.Intn(len(interval))])
 	}
 	// Edge case: this user has less than quizChoiceCount (= 5) connections
