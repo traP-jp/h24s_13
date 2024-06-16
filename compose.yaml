@@ -4,6 +4,7 @@ services:
       context: ./client
       target: dev
       # target: prod
+    restart: always
     volumes:
       - ./client:/work
       - /work/node_modules
@@ -16,6 +17,7 @@ services:
 
   server:
     build: ./server
+    restart: always
     environment:
       PORT: "8080"
       MARIADB_HOSTNAME: mysql
@@ -28,9 +30,13 @@ services:
       "traefik.http.routers.server.middlewares": tfa@docker
       "traefik.http.routers.server.service": server
       "traefik.http.services.server.loadbalancer.server.port": "8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   mysql:
     image: mariadb:11
+    restart: always
     environment:
       MARIADB_ROOT_PASSWORD: password
       MARIADB_DATABASE: dev
@@ -38,9 +44,15 @@ services:
       - 3306:3306
     volumes:
       - ./data/mysql:/var/lib/mysql
+    healthcheck:
+      test: mariadb --user=root --password=password --execute "SHOW DATABASES;"
+      interval: 1s
+      timeout: 10s
+      retries: 60
 
   auth:
     image: ghcr.io/traptitech/traefik-forward-auth:3.2.1
+    restart: always
     command:
       - -config=/config.yaml
     volumes:
@@ -52,6 +64,7 @@ services:
 
   traefik:
     image: traefik:3.0
+    restart: always
     command:
       - --providers.docker=true
     ports:

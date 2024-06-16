@@ -3,12 +3,14 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"math/rand"
 	"net/http"
 	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
+	"github.com/samber/lo"
 
 	"github.com/traP-jp/h24s_13/server/utils/ds"
 )
@@ -125,12 +127,44 @@ func (h *Handlers) GetQuiz(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "missing user id")
 	}
 
+	conn, err := h.repo.GetConnections(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	// Sort by strength
+	neighbors := make([]string, 0, len(conn))
+	for key := range conn {
+		neighbors = append(neighbors, key)
+	}
+	slices.SortFunc(neighbors, ds.SortDesc(func(id string) float64 { return conn[id] }))
+
 	// Choose random 5 people
 	choices := make([]string, 0, quizChoiceCount)
-	// TODO: implement me
-	for range quizChoiceCount {
-		choices = append(choices, id)
+	intervalCount := min(quizChoiceCount, len(neighbors))
+	for i := range intervalCount {
+		interval := neighbors[len(conn)*i/intervalCount : len(conn)*(i+1)/intervalCount]
+		choices = append(choices, interval[rand.Intn(len(interval))])
 	}
+	// Edge case: this user has less than quizChoiceCount (= 5) connections
+	// Select from all other users by random
+	if len(neighbors) < quizChoiceCount {
+		users, err := h.repo.GetUserIDs()
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		// Users that are not neighbors
+		users = lo.Filter(users, func(id string, _ int) bool {
+			return !lo.Contains(neighbors, id)
+		})
+		// Shuffle and select randomly
+		ds.Shuffle(users)
+		additionCount := quizChoiceCount - len(neighbors)
+		choices = append(choices, users[:min(additionCount, len(users))]...)
+	}
+
+	// Shuffle
+	ds.Shuffle(choices)
 
 	// Respond
 	return c.JSON(http.StatusOK, choices)
