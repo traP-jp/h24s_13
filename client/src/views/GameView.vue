@@ -19,15 +19,19 @@
     </draggable>
   </div>
 
-  <br />
   <div class="flex justify-center w-full mt-3 relative"></div>
   <div class="flex justify-center w-full mt-3">
-    <div class="triangle-left"></div>
-    <div class="w-96 bg-gray-300 h-10 bg-gradient-to-r from-red-500 to-blue-300 via-red-300"></div>
-    <div class="triangle-right"></div>
-  </div>
-  <br />
-  <div class="flex justify-center">
+      <div class="triangle-left"></div>
+      <div class="w-96 bg-gray-300 h-10 bg-gradient-to-r from-red-500 to-blue-300 via-red-300"></div>
+      <div class="triangle-right"></div>
+    </div>
+    <div class="flex justify-center items-center gap-4">
+      <div class="text-2xl h-10 mx-6">強い</div>
+      <div class="text-2xl h-10 mx-20">繋がり</div>
+      <div class="text-2xl h-10 mx-6">弱い </div>
+    </div>
+
+<div class="flex justify-center">
     <button
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded fucus:outline-none focus:shadow-outline mt-3"
       @click="checkResult"
