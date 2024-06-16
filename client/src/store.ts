@@ -16,6 +16,5 @@ export const changeableUsers = ref<User[]>([
 ])
 
 export const answerUsers = ref<User[]>([])
-export const API_URL = import.meta.env.VITE_APP_API_URL
 
 export const imageURLs = ref<User[]>([])
