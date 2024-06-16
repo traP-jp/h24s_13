@@ -92,3 +92,35 @@ func (r *Repository) GetConnections(id string) (map[string]float64, error) {
 
 	return connections, nil
 }
+
+func (r *Repository) GetFriends(ids []string) ([]string, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	var query = `SELECT DISTINCT id_2 FROM (
+    SELECT
+        *,
+        ROW_NUMBER() OVER (PARTITION BY id_1 ORDER BY strength DESC) AS num
+    FROM user_connections
+) t
+JOIN (
+    SELECT id_1 AS id, COUNT(*) / 2 AS border
+    FROM user_connections
+    GROUP BY id_1
+) border ON t.id_1 = border.id
+WHERE id_1 IN (?)
+    AND num <= border`
+
+	args := ds.Map(ids, func(s string) any { return s })
+	query, args, err := sqlx.In(query, args)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []string
+	err = r.db.Select(&result, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}

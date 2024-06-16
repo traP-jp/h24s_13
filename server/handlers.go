@@ -76,11 +76,52 @@ func (h *Handlers) GetUserRandomConnection(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "count must be a positive integer less than 31")
 	}
 
+	// Get user connections
+	conn, err := h.repo.GetConnections(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	// Sort by strength
+	friends := make([]string, 0, len(conn))
+	for key := range conn {
+		friends = append(friends, key)
+	}
+	slices.SortFunc(friends, ds.SortDesc(func(id string) float64 { return conn[id] }))
+	friends = friends[:len(friends)/2]
+	var borderline float64
+	if len(friends) > 0 {
+		borderline = conn[friends[len(friends)-1]]
+	} else {
+		borderline = 0
+	}
+
+	choices, err := h.repo.GetFriends(friends)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	choices = lo.Filter(choices, func(x string, index int) bool {
+		return x != id && conn[x] < borderline
+	})
+
+	ds.Shuffle(choices)
+
 	// Get "friend of friend" connections
-	connections := make([]string, 0, count)
-	for range count {
-		// TODO: implement me
-		connections = append(connections, id)
+	choiceCount := min(count, len(choices))
+	connections := choices[:choiceCount]
+	// Edge case: count of friend of friend < count
+	// Select from all other users by random
+	if len(choices) < count {
+		users, err := h.repo.GetUserIDs()
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		// Users that are not choices
+		users = lo.Filter(users, func(id string, _ int) bool {
+			return !lo.Contains(choices, id)
+		})
+		ds.Shuffle(users)
+		additionCount := count - len(choices)
+		connections = append(connections, users[:min(additionCount, len(users))]...)
 	}
 
 	// Respond
