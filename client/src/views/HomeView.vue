@@ -2,7 +2,7 @@
   <body>
     <div class="app mt-40">
       <div class="text-8xl place-items-center">
-        <h1>タイトルの名前</h1>
+        <h1>networQ</h1>
       </div>
 
       <div class="place-items-center mt-10">
