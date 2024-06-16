@@ -1,5 +1,5 @@
 <template>
-  <WebComponent centerPersonId="toki" />
+  <WebComponent />
   <ListComponent />
 </template>
 

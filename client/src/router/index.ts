@@ -37,7 +37,7 @@ const router = createRouter({
     {
       path: '/connection',
       name: 'connection',
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/WebView.vue')
     }
   ]
 })
