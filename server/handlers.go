@@ -88,7 +88,12 @@ func (h *Handlers) GetUserRandomConnection(c echo.Context) error {
 	}
 	slices.SortFunc(friends, ds.SortDesc(func(id string) float64 { return conn[id] }))
 	friends = friends[:len(friends)/2]
-	borderline := conn[friends[len(friends)-1]]
+	var borderline float64
+	if len(friends) > 0 {
+		borderline = conn[friends[len(friends)-1]]
+	} else {
+		borderline = 0
+	}
 
 	choices := make([]string, 0)
 	used := make(map[string]bool)
