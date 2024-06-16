@@ -1,11 +1,11 @@
 <template>
   <body>
     <div class="app mt-40">
-      <div class="text-8xl flex justify-center">
+      <div class="text-8xl place-items-center">
         <h1>タイトルの名前</h1>
       </div>
 
-      <div class="flex justify-center mt-10">
+      <div class="place-items-center mt-10">
         <button
           @click="home"
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-12 rounded fucus:outline-none focus:shadow-outline mt-3"
