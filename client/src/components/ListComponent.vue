@@ -28,6 +28,11 @@ async function fetchListData() {
   profilesE.value = frendsOfFrends.value.slice(20, 25)
 }
 
+const click = async (id: string) => {
+  targetId.value = id
+  await fetchListData()
+}
+
 onMounted(fetchListData)
 
 watch(targetId, fetchListData)
@@ -39,7 +44,7 @@ watch(targetId, fetchListData)
     <div class="grid grid-rows-1 grid-flow-col">
       <div class="grid bg-blue-50">
         <div v-for="profile in profilesA" :key="profile.traPID">
-          <div class="flex justify-center mt-1 mb-1">
+          <div class="flex justify-center mt-1 mb-1 cursor-pointer" @click="click(profile.traPID)">
             <img
               :src="'https://q.trap.jp/api/v3/public/icon/' + profile.traPID"
               alt="アイコン"
@@ -51,7 +56,7 @@ watch(targetId, fetchListData)
       </div>
       <div class="grid bg-red-50">
         <div v-for="profile in profilesB" :key="profile.traPID">
-          <div class="flex justify-center mt-1 mb-1">
+          <div class="flex justify-center mt-1 mb-1 cursor-pointer" @click="click(profile.traPID)">
             <img
               :src="'https://q.trap.jp/api/v3/public/icon/' + profile.traPID"
               alt="アイコン"
@@ -63,7 +68,7 @@ watch(targetId, fetchListData)
       </div>
       <div class="grid bg-green-50">
         <div v-for="profile in profilesC" :key="profile.traPID">
-          <div class="flex justify-center mt-1 mb-1">
+          <div class="flex justify-center mt-1 mb-1 cursor-pointer" @click="click(profile.traPID)">
             <img
               :src="'https://q.trap.jp/api/v3/public/icon/' + profile.traPID"
               alt="アイコン"
@@ -75,7 +80,7 @@ watch(targetId, fetchListData)
       </div>
       <div class="grid bg-yellow-50">
         <div v-for="profile in profilesD" :key="profile.traPID">
-          <div class="flex justify-center mt-1 mb-1">
+          <div class="flex justify-center mt-1 mb-1 cursor-pointer" @click="click(profile.traPID)">
             <img
               :src="'https://q.trap.jp/api/v3/public/icon/' + profile.traPID"
               alt="アイコン"
@@ -87,7 +92,7 @@ watch(targetId, fetchListData)
       </div>
       <div class="grid bg-purple-50">
         <div v-for="profile in profilesE" :key="profile.traPID">
-          <div class="flex justify-center mt-1 mb-1">
+          <div class="flex justify-center mt-1 mb-1 cursor-pointer" @click="click(profile.traPID)">
             <img
               :src="'https://q.trap.jp/api/v3/public/icon/' + profile.traPID"
               alt="アイコン"
