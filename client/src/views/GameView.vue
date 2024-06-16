@@ -66,6 +66,7 @@
               class="rounded-full w-16 h-16"
               @click="showHint(user.id)"
             />
+            <div class="my-auto">{{ user.id }}</div>
           </div>
         </div>
         <div
