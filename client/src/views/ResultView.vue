@@ -61,7 +61,7 @@ const showConnection = async () => {
 const getAnswerUsers = async (id: string) => {
   try {
     const answersQuery = changeableUsers.value.map((user) => user.id).join(',')
-    const res = await fetch(`api/quiz/new?id=${id}&answers=${answersQuery}`)
+    const res = await fetch(`/api/quiz/answer?id=${id}&answers=${answersQuery}`)
     const userIds = await res.json()
     answerUsers.value = userIds.map((userId: string) => ({ id: userId }))
   } catch (error) {
