@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import draggable from 'vuedraggable'
 import { changeableUsers, targetId } from '@/store'
@@ -141,6 +141,11 @@ const showHint = async (id: string) => {
     console.error('There was a problem with the fetch operation:', error)
   }
 }
+onMounted(() => {
+  if (changeableUsers.value.length === 0) {
+    router.push('/prepare')
+  }
+})
 </script>
 
 <style scoped>

@@ -1,19 +1,18 @@
-import { reactive, ref, computed } from 'vue'
+import { mdiKnife } from '@mdi/js'
+import { reactive, ref, computed, onMounted } from 'vue'
 
 export interface User {
   id: string
   url: string
 }
 
-export const targetId = ref('masky5859')
+const me = await (await fetch(`/api/users/me`)).json()
+const myID = me.id
+const randomFriends = await (await fetch(`/api/users/${myID}/random?count=1`)).json()
 
-export const changeableUsers = ref<User[]>([
-  { id: 'masky5859', url: 'https://q.trap.jp/api/v3/public/icon/masky5859' },
-  { id: 'takeno_hito', url: 'https://q.trap.jp/api/v3/public/icon/takeno_hito' },
-  { id: 'cp20', url: 'https://q.trap.jp/api/v3/public/icon/cp20' },
-  { id: 'toki', url: 'https://q.trap.jp/api/v3/public/icon/toki' },
-  { id: 'Series_205', url: 'https://q.trap.jp/api/v3/public/icon/Series_205' }
-])
+export const targetId = ref(randomFriends[0])
+
+export const changeableUsers = ref<User[]>([])
 
 export const answerUsers = ref<User[]>([])
 
