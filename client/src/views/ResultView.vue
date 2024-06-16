@@ -4,7 +4,7 @@
       <h2 class="font-bold text-4xl my-4">正解</h2>
     </div>
     <div class="w-2/5 grid grid-cols-5 gap-4 place-items-center my-4">
-      <div v-for="user in changeableUsers" :key="user.id" class="flex justify-center">
+      <div v-for="user in answerUsers" :key="user.id" class="flex justify-center">
         <img
           :src="`https://q.trap.jp/api/v3/public/icon/${user.id}`"
           alt="Profile Icon"
@@ -16,7 +16,7 @@
       <h2 class="font-bold text-4xl my-4">あなたの答え</h2>
     </div>
     <div class="w-2/5 grid grid-cols-5 gap-4 place-items-center my-4">
-      <div v-for="user in answerUsers" :key="user.id" class="flex justify-center">
+      <div v-for="user in changeableUsers" :key="user.id" class="flex justify-center">
         <img
           :src="`https://q.trap.jp/api/v3/public/icon/${user.id}`"
           alt="Profile Icon"
@@ -60,12 +60,11 @@ const showConnection = async () => {
 
 const getAnswerUsers = async (id: string) => {
   try {
-    console.log(answerUsers.value)
     const answersQuery = changeableUsers.value.map((user) => user.id).join(',')
-    const res = await fetch(`${API_URL}/quiz/new?id=${id}&answers=${answersQuery}`)
+    const res = await fetch(`${API_URL}/quiz/answer?id=${id}&answers=${answersQuery}`)
+    console.log(`${API_URL}/quiz/new?id=${id}&answers=${answersQuery}`)
     const userIds = await res.json()
     answerUsers.value = userIds.map((userId: string) => ({ id: userId }))
-    console.log(answerUsers.value)
   } catch (error) {
     console.error(error)
   }

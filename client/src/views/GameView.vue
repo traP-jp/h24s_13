@@ -40,10 +40,9 @@
     </button>
   </div>
   <div class="flex justify-center">
-    <svg-icon type="mdi" :path="path" class="w-5"></svg-icon>
+    <svg-icon type="mdi" :path="path" class="w-5" @click="showHintModal"></svg-icon>
   </div>
 
-  <button @click="showHintModal">showHINT</button>
   <div
     v-if="isModalOpen"
     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
@@ -58,7 +57,7 @@
         <div class="grid grid-cols-5 gap-4 place-items-center my-4">
           <div v-for="user in changeableUsers" :key="user.id" class="flex justify-center">
             <img
-              :src="user.url"
+              :src="`https://q.trap.jp/api/v3/public/icon/${user.id}`"
               alt="Profile Icon"
               class="rounded-full w-16 h-16"
               @click="showHint(user.id)"
@@ -99,7 +98,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import draggable from 'vuedraggable'
-// import { globalState} from '../store/store.ts'
 import WebComponent from '../components/WebComponent.vue'
 import { changeableUsers, targetId } from '.././store'
 import SvgIcon from '@jamescoyle/vue-icon'
