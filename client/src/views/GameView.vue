@@ -39,6 +39,10 @@
       結果を見る
     </button>
   </div>
+  <div class="flex justify-center">
+    <svg-icon type="mdi" :path="path" class="w-5"></svg-icon>
+  </div>
+  
 </template>
 
 <script setup lang="ts">
@@ -48,6 +52,9 @@ import draggable from 'vuedraggable'
 // import { globalState} from '../store/store.ts'
 import WebComponent from '../components/WebComponent.vue'
 import { changeableUsers, targetId } from '.././store'
+import SvgIcon from '@jamescoyle/vue-icon'
+import {  mdiLightbulbOnOutline } from '@mdi/js'
+const path =  mdiLightbulbOnOutline
 
 const router = useRouter()
 const checkResult = () => {
@@ -70,4 +77,12 @@ const checkResult = () => {
   border-bottom: 20px solid transparent;
   border-left: 20px solid #60a5faa3;
 }
+svg{
+    height: 40px;
+    width: 40px;
+    position: relative;
+    left: 240px;
+    bottom: 215px;
+}
+
 </style>
