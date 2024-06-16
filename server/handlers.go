@@ -114,13 +114,11 @@ func (h *Handlers) GetUserRandomConnection(c echo.Context) error {
 			}
 		}
 	}
+	ds.Shuffle(choices)
 
 	// Get "friend of friend" connections
-	connections := make([]string, 0, count)
-	for range count {
-		// TODO: implement me
-		connections = append(connections, id)
-	}
+	choiceCount := min(count, len(choices))
+	connections := choices[:choiceCount]
 
 	// Respond
 	return c.JSON(http.StatusOK, connections)
