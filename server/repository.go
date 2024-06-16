@@ -63,6 +63,15 @@ func (r *Repository) GetUser(id string) (*User, error) {
 	}, nil
 }
 
+func (r *Repository) GetUserIDs() ([]string, error) {
+	var ids []string
+	err := r.db.Select(&ids, "SELECT id FROM users")
+	if err != nil {
+		return nil, err
+	}
+	return ids, nil
+}
+
 type repositoryUserConnection struct {
 	ID1      string  `db:"id_1"`
 	ID2      string  `db:"id_2"`
