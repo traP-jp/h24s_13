@@ -1,8 +1,12 @@
 <template>
   <div class="grid grid-cols-1 place-items-center">
-    <div><h1 class="text-6xl">Welcome to GameView!</h1></div>
-    <div class="text-4xl h-40">hogeさんとの繋がりが強い順に並べてください</div>
-    <draggable v-model="userInfo" item-key="id" class="grid grid-cols-5 gap-4" handle=".handle">
+    <div class="text-4xl h-40">{{ targetId }}さんとの繋がりが近い順に並べてください</div>
+    <draggable
+      v-model="changeableUsers"
+      item-key="id"
+      class="grid grid-cols-5 gap-4"
+      handle=".handle"
+    >
       <template #item="{ element }">
         <span class="handle">
           <img
@@ -43,12 +47,10 @@ import { useRouter } from 'vue-router'
 import draggable from 'vuedraggable'
 // import { globalState} from '../store/store.ts'
 import WebComponent from '../components/WebComponent.vue'
-import { userInfo } from '.././store.ts'
+import { changeableUsers, targetId } from '.././store'
 
 const router = useRouter()
 const checkResult = () => {
-  alert('結果を見るボタンが押されました')
-  console.log(userInfo.value)
   router.push('/result')
 }
 </script>

@@ -1,11 +1,27 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { API_URL, changeableUsers, targetId } from '.././store'
 const router = useRouter()
 const traQID = ref<string>('')
-const click = (msg: string) => {
-  alert(msg)
-  router.push('/Game')
+const getFivePeople = async (id: string) => {
+  if (id === '') {
+    alert('traQIDを入力してください')
+    return
+  }
+  targetId.value = id
+  try {
+    const response = await fetch(`${API_URL}/quiz/new?id=${id}`)
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+    const userIds = await response.json()
+    changeableUsers.value = userIds.map((userId: string) => ({ id: userId }))
+    router.push('/game')
+  } catch (error) {
+    // TODO:error handling
+    console.error('There was a problem with the fetch operation:', error)
+  }
 }
 </script>
 
@@ -35,7 +51,7 @@ const click = (msg: string) => {
   <div class="flex justify-center">
     <button
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded fucus:outline-none focus:shadow-outline mt-3"
-      @click="click(traQID)"
+      @click="getFivePeople(traQID)"
     >
       ゲームスタート
     </button>
