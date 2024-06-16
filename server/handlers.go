@@ -76,6 +76,45 @@ func (h *Handlers) GetUserRandomConnection(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "count must be a positive integer less than 31")
 	}
 
+	// Get user connections
+	conn, err := h.repo.GetConnections(id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	// Sort by strength
+	friends := make([]string, 0, len(conn))
+	for key := range conn {
+		friends = append(friends, key)
+	}
+	slices.SortFunc(friends, ds.SortDesc(func(id string) float64 { return conn[id] }))
+	friends = friends[:len(friends)/2]
+	borderline := conn[friends[len(friends)-1]]
+
+	choices := make([]string, 0)
+	used := make(map[string]bool)
+	for _, v := range friends {
+		// Get user connections
+		conn2, err := h.repo.GetConnections(v)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		// Sort by strength
+		friendsOfFriend := make([]string, 0, len(conn2))
+		for key := range conn2 {
+			friendsOfFriend = append(friendsOfFriend, key)
+		}
+		slices.SortFunc(friendsOfFriend, ds.SortDesc(func(id string) float64 { return conn2[id] }))
+		friendsOfFriend = friendsOfFriend[:len(friendsOfFriend)/2]
+
+		for _, v := range friendsOfFriend {
+			// Exepect friends of "id"
+			if conn[v] < borderline && !used[v] {
+				choices = append(choices, v)
+				used[v] = true
+			}
+		}
+	}
+
 	// Get "friend of friend" connections
 	connections := make([]string, 0, count)
 	for range count {
