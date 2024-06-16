@@ -1,35 +1,37 @@
 <template>
-  <div class="grid place-items-center">
-    <div class="w-2/5 grid place-items-center">
-      <h2 class="font-bold text-4xl my-4">正解</h2>
-    </div>
-    <div class="w-2/5 grid grid-cols-5 gap-4 place-items-center my-4">
-      <div v-for="user in changeableUsers" :key="user.id" class="flex justify-center">
-        <img
+  <div class="container mx-auto app">
+    <div class="grid place-items-center">
+      <div class="w-2/5 grid place-items-center">
+        <h1 class="font-bold text-4xl">正解</h1>
+      </div>
+     <div class="w-2/5 grid grid-cols-5 gap-4 place-items-center my-8">
+        <div v-for="user in changeableUsers" :key="user.id" class="flex justify-center">
+         <img
           :src="`https://q.trap.jp/api/v3/public/icon/${user.id}`"
           alt="Profile Icon"
           class="rounded-full w-16 h-16"
-        />
+         />
+       </div>
       </div>
-    </div>
-    <div class="w-2/5 grid place-items-center">
-      <h2 class="font-bold text-4xl my-4">あなたの答え</h2>
-    </div>
-    <div class="w-2/5 grid grid-cols-5 gap-4 place-items-center my-4">
-      <div v-for="user in answerUsers" :key="user.id" class="flex justify-center">
-        <img
+     <div class="w-2/5 grid place-items-center">
+       <h1 class="font-bold text-4xl my-4">あなたの答え</h1>
+     </div>
+      <div class="w-2/5 grid grid-cols-5 gap-4 place-items-center my-8">
+       <div v-for="user in answerUsers" :key="user.id" class="flex justify-center">
+         <img
           :src="`https://q.trap.jp/api/v3/public/icon/${user.id}`"
           alt="Profile Icon"
           class="rounded-full w-16 h-16"
-        />
+         />
+        </div>
       </div>
-    </div>
     <button
-      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded focus:outline-none focus:shadow-outline my-4"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded focus:outline-none focus:shadow-outline"
       @click="showConnection"
-    >
+      >
       {{ targetId }}さんの繋がりを見る
     </button>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
