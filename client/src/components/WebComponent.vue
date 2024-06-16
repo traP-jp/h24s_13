@@ -1,5 +1,9 @@
 <template>
   <!-- TODO: convert CSS to TailwindCSS -->
+  <div class="w-3/5 mx-auto">
+    <div class="font-bold text-2xl">{{ targetId }}さんのネットワーク</div>
+    <div>アイコンをクリックしてその人のネットワークを見る</div>
+  </div>
   <div class="flex justify-center items-center">
     <div class="big-circle">
       <div class="center-item">
@@ -7,7 +11,7 @@
           @click="showCenterPersonInfo"
           :src="`https://q.trap.jp/api/v3/public/icon/${targetId}`"
           alt="center icon"
-          class="rounded-full w-16 h-16"
+          class="rounded-full w-16 h-16 cursor-pointer"
         />
       </div>
       <div v-for="(image, index) in imageURLs" :key="index" class="circle-item">
@@ -16,6 +20,7 @@
           @click="showAroundPersonWeb(image.id)"
           :src="image.url"
           alt="around person"
+          class="cursor-pointer"
         />
       </div>
     </div>
@@ -57,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { targetId, imageURLs } from '../store'
 
 const isModalOpen = ref(false)
@@ -73,7 +78,7 @@ const getConnections = async (id: string) => {
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }
-    const connections = await response.json() as Connection[]
+    const connections = (await response.json()) as Connection[]
     let sortedConnections = connections
       .sort((a, b) => -a.strength + b.strength)
       .map((item) => ({
@@ -143,6 +148,11 @@ onMounted(async () => {
     const y = Math.sin(angle) * currentRadius + containerCenter.y - item.clientHeight / 2
     ;(item as HTMLElement).style.transform = `translate(${x}px, ${y}px)`
   })
+})
+
+watch(targetId, async () => {
+  await getConnections(targetId.value)
+  await getUserGroups(targetId.value)
 })
 </script>
 

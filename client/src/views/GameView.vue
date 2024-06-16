@@ -15,7 +15,7 @@
             <img
               :src="`https://q.trap.jp/api/v3/public/icon/${element.id}`"
               alt="Profile Icon"
-              class="rounded-full w-16 h-16"
+              class="rounded-full w-16 h-16 cursor-pointer"
             />
           </span>
         </template>
@@ -43,7 +43,7 @@
       結果を見る
     </button>
   </div>
-  <div class="flex justify-center">
+  <div class="flex justify-center cursor-pointer">
     <svg-icon type="mdi" :path="path" class="w-5" @click="showHintModal"></svg-icon>
   </div>
 
@@ -63,7 +63,7 @@
             <img
               :src="`https://q.trap.jp/api/v3/public/icon/${user.id}`"
               alt="Profile Icon"
-              class="rounded-full w-16 h-16"
+              class="rounded-full w-16 h-16 cursor-pointer"
               @click="showHint(user.id)"
             />
           </div>
