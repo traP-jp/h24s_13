@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 place-items-center">
+  <div class="app grid grid-cols-1 place-items-center">
     <div class="text-4xl h-40">{{ targetId }}さんとの繋がりが近い順に並べてください</div>
     <draggable
       v-model="changeableUsers"
