@@ -107,8 +107,9 @@ func (h *Handlers) GetUserRandomConnection(c echo.Context) error {
 		friendsOfFriend = friendsOfFriend[:len(friendsOfFriend)/2]
 
 		for _, v := range friendsOfFriend {
-			// Exepect friends of "id"
-			if conn[v] < borderline && !used[v] {
+			// Except friends of "id"
+			// Except "id"
+			if id != v && conn[v] < borderline && !used[v] {
 				choices = append(choices, v)
 				used[v] = true
 			}
