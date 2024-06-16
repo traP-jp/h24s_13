@@ -19,11 +19,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { targetId, API_URL, imageURLs } from '../store'
+import { targetId, imageURLs } from '../store'
 
 const getConnections = async (id: string) => {
   try {
-    const response = await fetch(`${API_URL}/users/${id}/connections`)
+    const response = await fetch(`api/users/${id}/connections`)
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }
