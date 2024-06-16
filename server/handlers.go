@@ -139,10 +139,9 @@ func (h *Handlers) GetQuiz(c echo.Context) error {
 	slices.SortFunc(neighbors, ds.SortDesc(func(id string) float64 { return conn[id] }))
 
 	// Choose random 5 people
-	// TODO: strength が同じ人が選ばれないようにする
 	choices := make([]string, 0, quizChoiceCount)
 	for i := range quizChoiceCount {
-		interval := neighbors[len(conn)*i/5 : len(conn)*(i+1)/5]
+		interval := neighbors[len(conn)*i/quizChoiceCount : len(conn)*(i+1)/quizChoiceCount]
 		choices = append(choices, interval[rand.Intn(len(interval))])
 	}
 
