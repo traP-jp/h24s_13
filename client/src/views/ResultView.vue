@@ -34,28 +34,13 @@
 </template>
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { changeableUsers, answerUsers, targetId, imageURLs } from '.././store'
+import { changeableUsers, answerUsers, targetId } from '.././store'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const showConnection = async () => {
-  try {
-    // const response = await fetch(`api/users/${targetId.value}/connections`)
-    // if (!response.ok) {
-    //   throw new Error('Network response was not ok')
-    // }
-    // const connections = await response.json()
-    // const sortedConnections = connections
-    //   .sort((a, b) => -a.strength + b.strength)
-    //   .map((item) => item.id)
-    // imageURLs.value = sortedConnections.map(
-    //   (userId: string) => `https://q.trap.jp/api/v3/public/icon/${userId}`
-    // )
-    router.push('/connection')
-  } catch (error) {
-    console.error('There was a problem with the fetch operation:', error)
-  }
+const showConnection = () => {
+  router.push('/connection')
 }
 
 const getAnswerUsers = async (id: string) => {
@@ -69,8 +54,8 @@ const getAnswerUsers = async (id: string) => {
   }
 }
 
-onMounted(() => {
-  getAnswerUsers(targetId.value)
+onMounted(async () => {
+  await getAnswerUsers(targetId.value)
 })
 </script>
 
