@@ -1,16 +1,18 @@
-import { mdiKnife } from '@mdi/js'
-import { reactive, ref, computed, onMounted } from 'vue'
+import { ref } from 'vue'
 
 export interface User {
   id: string
   url: string
 }
 
-const me = await (await fetch(`/api/users/me`)).json()
-const myID = me.id
-const randomFriends = await (await fetch(`/api/users/${myID}/random?count=1`)).json()
+export const targetId = ref('')
 
-export const targetId = ref(randomFriends[0])
+;(async () => {
+  const me = await (await fetch(`/api/users/me`)).json()
+  const myID = me.id
+  const randomFriends = await (await fetch(`/api/users/${myID}/random?count=1`)).json()
+  targetId.value = randomFriends[0]
+})()
 
 export const changeableUsers = ref<User[]>([])
 
